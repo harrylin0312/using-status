@@ -53,7 +53,7 @@ button {
     border-radius: 980px;
     width: 150px;
     height: 90px;
-    transition: all 0.3s ease-in-out;
+    transition: all 1s ease-in-out;
 }
 /*按鈕位移*/
 @keyframes open-animation {
@@ -106,6 +106,27 @@ button {
         background-color: #dfe1df;
     }
 }
+/*提示框*/
+@keyframes open-expand{
+    from {
+        width: 90px;
+        height: 42px;
+        }
+    to {
+        width: 280px;
+        height: 42px;
+    }
+}
+@keyframes close-expand{
+    from {
+        width: 280px;
+        height: 42px;
+        }
+    to {
+        width: 90px;
+        height: 42px;
+    }
+}
 #testStatusText {
     position: absolute;
     top: 65%;
@@ -116,6 +137,8 @@ button {
     text-align: center;
     padding: 10px 20px;
     border-radius: 980px;
+    transition: all 0.3s ease-in-out;
+    white-space: nowrap;/*防止換行*/
     
     background: rgba(255, 255, 255, 0.25);
     backdrop-filter: blur(10px) saturate(180%);
@@ -126,4 +149,12 @@ button {
 /*------------------------------------------------------------*/
 .hidden {
     display: none;
+}
+.fade-out {
+    opacity: 0;
+    transition: opacity 0.15s ease;
+}
+.fade-in {
+    opacity: 1;
+    transition: opacity 0.4s ease;
 }
