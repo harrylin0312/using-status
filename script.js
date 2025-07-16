@@ -11,6 +11,8 @@ const db = firebase.firestore();
 const statusDocRef = db.collection("shared").doc("status");
 const testStatusText = document.getElementById("testStatusText");
 
+let countdownInterval;
+let lastRemainingMin = null;
 
 //判斷狀態是否已過期
 function isExpired(lastUpdated) {
@@ -28,11 +30,55 @@ async function updateStatus(newStatus) {
   });
 }
 
+// 新增淡入淡出文字更新函式
+function updateTextWithFade(element, newText, noFadeIn = false) {
+  element.classList.remove("fade-in");
+  element.classList.add("fade-out");
+  setTimeout(() => {
+    element.textContent = newText;
+    if (!noFadeIn) {
+      element.classList.remove("fade-out");
+      element.classList.add("fade-in");
+    } else {
+      element.classList.remove("fade-out");
+    }
+  }, 250);
+}
+
+//倒數計時功能
+function startCountdown(expiryTime) {
+  clearInterval(countdownInterval);
+  lastRemainingMin = null;
+  countdownInterval = setInterval(() => {
+    const now = new Date();
+    const remainingMs = expiryTime - now;
+
+    if (remainingMs <= 0) {
+      clearInterval(countdownInterval);
+      updateTextWithFade(testStatusText, "未使用");
+      return;
+    }
+
+    const remainingMin = Math.ceil(remainingMs / 60000);
+    if (remainingMin !== lastRemainingMin) {
+      lastRemainingMin = remainingMin;
+      updateTextWithFade(testStatusText, `使用中, 剩餘 ${remainingMin} min`);
+    }
+  }, 1000);
+}
+
 //查詢初始狀態
 function renderStatus(data) {
   const expired = isExpired(data.lastUpdated);
   const currentStatus = expired ? false : data.status;
-  testStatusText.textContent = currentStatus ? "使用中" : "未使用";
+
+  if (!currentStatus) {
+    updateTextWithFade(testStatusText, "未使用");
+    clearInterval(countdownInterval);
+  } else {
+    const expiryTime = new Date(new Date(data.lastUpdated).getTime() + 120 * 60000);
+    startCountdown(expiryTime);
+  }
 
   // 初始化：設定狀態但不執行動畫
   if (!ballState) {
@@ -47,14 +93,16 @@ function renderStatus(data) {
 
   // 執行動畫切換
   if (currentStatus && ballState !== "open") {
-    ball.style.animation = "open-animation 0.6s forwards";
-    box.style.animation = "open-Btn-color 0.7s forwards";
-    document.body.style.animation = "open-background-color 0.7s forwards";
+    ball.style.animation = "open-animation 0.8s forwards";
+    box.style.animation = "open-Btn-color 0.8s forwards";
+    document.body.style.animation = "open-background-color 0.8s forwards";
+    testStatusText.style.animation = "open-expand 0.8s forwards";
     ballState = "open";
   } else if (!currentStatus && ballState !== "closed") {
-    ball.style.animation = "close-animation 0.6s forwards";
-    box.style.animation = "close-Btn-color 0.7s forwards";
-    document.body.style.animation = "close-background-color 0.7s forwards";
+    ball.style.animation = "close-animation 0.8s forwards";
+    box.style.animation = "close-Btn-color 0.8s forwards";
+    document.body.style.animation = "close-background-color 0.8s forwards";
+    testStatusText.style.animation = "close-expand 0.8s forwards";
     ballState = "closed";
   }
 }
@@ -94,6 +142,7 @@ const box = document.getElementById("box");
 let ballState = null;
 
 ball.addEventListener("click", async () => {
+  updateTextWithFade(testStatusText, "使用中, 剩餘 xx min", true);
   const doc = await statusDocRef.get();
   let currentStatus = false;
 
