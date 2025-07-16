@@ -1,0 +1,129 @@
+:root {
+    --vh: 1vh;
+}
+body, html {
+    margin: 0;
+    padding: 0;
+    height: calc(var(--vh) * 100);
+    overflow: hidden;
+}
+/*------------------------------------------------------------*/
+body {
+    margin: 0;
+    padding: 0;
+    font-family: Arial, sans-serif;
+    background-color: #dfe1df;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: calc(var(--vh) * 100);
+    position: relative;
+}
+button {
+    font-size: 24px;
+    padding: 20px 40px;
+    cursor: pointer;
+}
+/*------------------------------------------------------------*/
+#testBtn {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 250px;;
+    height: 100px;
+}
+#box {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background-color: #b4b4b4;
+    border-radius: 980px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    width: 250px;
+    height: 100px;
+}
+#ball {
+    position: absolute;
+    top: 50%;
+    left: 5px;
+    transform: translateY(-50%);
+    background-color: #ffffff;
+    border-radius: 980px;
+    width: 150px;
+    height: 90px;
+    transition: all 0.3s ease-in-out;
+}
+/*按鈕位移*/
+@keyframes open-animation {
+    from {
+        transform: translateY(-50%) translateX(0);
+    }
+    to {
+        transform: translateY(-50%) translateX(90px);
+    }
+}
+@keyframes close-animation {
+    from {
+        transform: translateY(-50%) translateX(90px);
+    }
+    to {
+        transform: translateY(-50%) translateX(0);
+    }
+}
+/*按鈕背景色*/
+@keyframes open-Btn-color{
+    from {
+        background-color: #b4b4b4;
+        }
+    to {
+        background-color: #30D158;
+    }
+}
+@keyframes close-Btn-color{
+    from {
+        background-color: #30D158;
+        }
+    to {
+        background-color: #b4b4b4;
+    }
+}
+/*背景色*/
+@keyframes open-background-color{
+    from {
+        background-color: #dfe1df;
+        }
+    to {
+        background-color: #c7ffcb;
+    }
+}
+@keyframes close-background-color{
+    from {
+        background-color: #c7ffcb;
+        }
+    to {
+        background-color: #dfe1df;
+    }
+}
+#testStatusText {
+    position: absolute;
+    top: 65%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-size: 30px;
+    color: #000000;
+    text-align: center;
+    padding: 10px 20px;
+    border-radius: 980px;
+    
+    background: rgba(255, 255, 255, 0.25);
+    backdrop-filter: blur(10px) saturate(180%);
+    -webkit-backdrop-filter: blur(10px) saturate(180%);
+    border: 0.1px solid rgba(255, 255, 255, 0.2);
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+}
+/*------------------------------------------------------------*/
+.hidden {
+    display: none;
+}
