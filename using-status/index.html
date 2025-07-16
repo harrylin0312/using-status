@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>狀態按鈕</title>
+  <style>
+    body { font-family: sans-serif; text-align: center; margin-top: 100px; }
+    button { font-size: 24px; padding: 20px 40px; cursor: pointer; }
+  </style>
+</head>
+<body>
+  <h1 id="statusText">載入中...</h1>
+  <button id="toggleBtn">請稍候...</button>
+
+  <!-- Firebase CDN -->
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
+
+  <!-- 外部 JavaScript 檔案 -->
+  <script type="module" src="script.js"></script>
+</body>
+</html>
