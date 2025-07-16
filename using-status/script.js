@@ -34,7 +34,7 @@ async function updateStatus(newStatus) {
 function renderStatus(data) {
   const expired = isExpired(data.lastUpdated);
   const currentStatus = expired ? false : data.status;
-  statusText.textContent = currentStatus ? "✅ 使用中" : "❌ 未使用";
+  statusText.textContent = currentStatus ? "⚠️使用中，搶登一個你試試" : "❌ 未使用";
   toggleBtn.textContent = currentStatus ? "取消使用" : "開始使用";
 }
 
