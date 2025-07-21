@@ -10,6 +10,7 @@ firebase.initializeApp(firebaseConfig);
 const db = firebase.firestore();
 const statusDocRef = db.collection("shared").doc("status");
 const testStatusText = document.getElementById("testStatusText");
+const textSpan = document.getElementById("textSpan");
 
 let countdownInterval;
 let lastRemainingMin = null;
@@ -26,27 +27,36 @@ function isExpired(lastUpdated) {
 async function updateStatus(newStatus) {
   await statusDocRef.set({
     status: newStatus,
-    lastUpdated: new Date().toISOString()
+    lastUpdated: new Date().toISOString(),
+    userID: localStorage.getItem("userID") || ""
   });
 }
 
 // 新增淡入淡出文字更新函式
-function updateTextWithFade(element, newText, noFadeIn = false) {
-  element.classList.remove("fade-in");
-  element.classList.add("fade-out");
+function updateTextWithFade(_, newText, noFadeIn = false) {
+  textSpan.classList.remove("fade-in", "fade-out");
+  void textSpan.offsetWidth;
+  textSpan.classList.add("fade-out");
   setTimeout(() => {
-    element.textContent = newText;
+    textSpan.innerHTML = newText;
+    textSpan.classList.remove("fade-out");
     if (!noFadeIn) {
-      element.classList.remove("fade-out");
-      element.classList.add("fade-in");
-    } else {
-      element.classList.remove("fade-out");
+      void textSpan.offsetWidth;
+      textSpan.classList.add("fade-in");
     }
   }, 250);
 }
 
+// 新增 getUserPrefix 函式
+function getUserPrefix(id) {
+  if (id === "tester") return "你";
+  if (id === "abc123") return "鋼";
+  if (id === "def456") return "聿";
+  return "你誰????????????";
+}
+
 //倒數計時功能
-function startCountdown(expiryTime) {
+function startCountdown(expiryTime, userID) {
   clearInterval(countdownInterval);
   lastRemainingMin = null;
   countdownInterval = setInterval(() => {
@@ -62,7 +72,13 @@ function startCountdown(expiryTime) {
     const remainingMin = Math.ceil(remainingMs / 60000);
     if (remainingMin !== lastRemainingMin) {
       lastRemainingMin = remainingMin;
-      updateTextWithFade(testStatusText, `使用中, 剩餘 ${remainingMin} min`);
+      const prefix = getUserPrefix(userID);
+      if (prefix === "你誰????????????") {
+        updateTextWithFade(testStatusText, `<span class="prefix">${prefix}</span>`);
+      } else {
+        updateTextWithFade(testStatusText, `<span class="prefix">${prefix}</span>使用中, 剩 ${remainingMin} min`);
+      }
+      testStatusText.style.animation = "open-expand 0.8s forwards";
     }
   }, 1000);
 }
@@ -77,7 +93,7 @@ function renderStatus(data) {
     clearInterval(countdownInterval);
   } else {
     const expiryTime = new Date(new Date(data.lastUpdated).getTime() + 120 * 60000);
-    startCountdown(expiryTime);
+    startCountdown(expiryTime, data.userID);
   }
 
   // 初始化：設定狀態但不執行動畫
@@ -96,7 +112,6 @@ function renderStatus(data) {
     ball.style.animation = "open-animation 0.8s forwards";
     box.style.animation = "open-Btn-color 0.8s forwards";
     document.body.style.animation = "open-background-color 0.8s forwards";
-    testStatusText.style.animation = "open-expand 0.8s forwards";
     ballState = "open";
   } else if (!currentStatus && ballState !== "closed") {
     ball.style.animation = "close-animation 0.8s forwards";
@@ -142,7 +157,7 @@ const box = document.getElementById("box");
 let ballState = null;
 
 ball.addEventListener("click", async () => {
-  updateTextWithFade(testStatusText, "使用中, 剩餘 xx min", true);
+  updateTextWithFade(testStatusText, "啟動中", true);
   const doc = await statusDocRef.get();
   let currentStatus = false;
 
