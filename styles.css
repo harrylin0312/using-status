@@ -133,7 +133,6 @@ button {
     left: 50%;
     transform: translate(-50%, -50%);
     font-size: 30px;
-    color: #000000;
     text-align: center;
     padding: 10px 20px;
     border-radius: 980px;
@@ -152,9 +151,13 @@ button {
 }
 .fade-out {
     opacity: 0;
-    transition: opacity 0.15s ease;
+    transition: opacity 0.3s ease;
 }
 .fade-in {
     opacity: 1;
-    transition: opacity 0.4s ease;
+    transition: opacity 0.8s ease;
+}
+.prefix {
+  color: #007aff;
+  font-weight: bold;
 }
